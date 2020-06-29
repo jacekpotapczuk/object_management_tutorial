@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Game : PersistableObject {
 
@@ -11,20 +13,38 @@ public class Game : PersistableObject {
     public KeyCode saveKey = KeyCode.S;
     public KeyCode loadKey = KeyCode.L;
     public KeyCode destroyKey = KeyCode.X;
+    public int levelCount;
 
     private List<Shape> shapes;
 
-    private const int saveVersion = 1;
+    private const int saveVersion = 2;
 
     private float creationProgress, destructionProgress;
+
+    private int loadedLevelBuildIndex;
 
     public float CreationSpeed { get; set; }
 
     public float DestructionSpeed { get; set; }
 
-    void Awake()
+    void Start()
     {
         shapes = new List<Shape>();
+
+        if (Application.isEditor)
+        {
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                Scene loadedScene = SceneManager.GetSceneAt(i);
+                if(loadedScene.name.Contains("Level "))
+                {
+                    SceneManager.SetActiveScene(loadedScene);
+                    loadedLevelBuildIndex = loadedScene.buildIndex;
+                    return;
+                }
+            }
+            StartCoroutine(LoadLevel(1));
+        }
     }
 
     void Update()
@@ -50,6 +70,18 @@ public class Game : PersistableObject {
         {
             DestroyShape();
         }
+        else
+        {
+            for (int i=1; i < levelCount; i++)
+            {
+                if(Input.GetKeyDown(KeyCode.Alpha0 + i))
+                {
+                    BeginNewGame();
+                    StartCoroutine(LoadLevel(i));
+                    return;
+                }
+            }
+        }
 
         creationProgress += Time.deltaTime * CreationSpeed;
         while (creationProgress >= 1f)
@@ -69,6 +101,7 @@ public class Game : PersistableObject {
     public override void Save(GameDataWriter writer)
     {
         writer.Write(shapes.Count);
+        writer.Write(loadedLevelBuildIndex);
         for(int i = 0; i < shapes.Count; i++)
         {
             writer.Write(shapes[i].ShapeId);
@@ -87,6 +120,7 @@ public class Game : PersistableObject {
         }
 
         int count = version <= 0 ? -version : reader.ReadInt();
+        StartCoroutine(LoadLevel(version < 2 ? 1: reader.ReadInt()));
 
         for (int i = 0; i < count; i++)
         {
@@ -96,6 +130,20 @@ public class Game : PersistableObject {
             isntance.Load(reader);
             shapes.Add(isntance);
         }
+    }
+
+    private IEnumerator LoadLevel(int levelBuildIndex)
+    {
+        enabled = false;
+        if(loadedLevelBuildIndex > 0)
+        {
+            yield return SceneManager.UnloadSceneAsync(loadedLevelBuildIndex);
+        }
+
+        yield return SceneManager.LoadSceneAsync(levelBuildIndex, LoadSceneMode.Additive); // loads scene and returns AsyncOperation reference which we use to wait before activating scene
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(levelBuildIndex));
+        loadedLevelBuildIndex = levelBuildIndex;
+        enabled = true;
     }
 
     private void CreateShape()
