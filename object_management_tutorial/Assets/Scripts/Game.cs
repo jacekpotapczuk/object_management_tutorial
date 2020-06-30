@@ -4,20 +4,21 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class Game : PersistableObject {
+    public static Game Instance { get; private set; }
 
-    public ShapeFactory shapeFactory;
-    public PersistentStorage storage;
+    [SerializeField] private ShapeFactory shapeFactory;
+    [SerializeField] private PersistentStorage storage;
 
-    public KeyCode createKey = KeyCode.C;
-    public KeyCode newGameKey = KeyCode.N;
-    public KeyCode saveKey = KeyCode.S;
-    public KeyCode loadKey = KeyCode.L;
-    public KeyCode destroyKey = KeyCode.X;
-    public int levelCount;
+    [SerializeField] private KeyCode createKey = KeyCode.C;
+    [SerializeField] private KeyCode newGameKey = KeyCode.N;
+    [SerializeField] private KeyCode saveKey = KeyCode.S;
+    [SerializeField] private KeyCode loadKey = KeyCode.L;
+    [SerializeField] private KeyCode destroyKey = KeyCode.X;
+    [SerializeField] private int levelCount;
 
     private List<Shape> shapes;
 
-    private const int saveVersion = 2;
+    private const int saveVersion = 3;
 
     private float creationProgress, destructionProgress;
 
@@ -26,6 +27,13 @@ public class Game : PersistableObject {
     public float CreationSpeed { get; set; }
 
     public float DestructionSpeed { get; set; }
+
+    public SpawnZone SpawnZoneOfLevel { get; set; }
+
+    void OnEnable()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -76,7 +84,6 @@ public class Game : PersistableObject {
             {
                 if(Input.GetKeyDown(KeyCode.Alpha0 + i))
                 {
-                    Debug.Log("Klawisz " + (KeyCode.Alpha0 + i).ToString());
                     BeginNewGame();
                     StartCoroutine(LoadLevel(i));
                     return;
@@ -151,7 +158,7 @@ public class Game : PersistableObject {
     {
         Shape instance = shapeFactory.GetRandom();
         Transform t = instance.transform;
-        t.localPosition = Random.insideUnitSphere * 5f;
+        t.localPosition = SpawnZoneOfLevel.SpawnPoint;
         t.localRotation = Random.rotation;
         t.localScale = Vector3.one * Random.Range(0.1f, 1f);
         instance.SetColor(Random.ColorHSV(hueMin: 0f, hueMax: 1f,
