@@ -72,10 +72,11 @@ public class Game : PersistableObject {
         }
         else
         {
-            for (int i=1; i < levelCount; i++)
+            for (int i=1; i <= levelCount; i++)
             {
                 if(Input.GetKeyDown(KeyCode.Alpha0 + i))
                 {
+                    Debug.Log("Klawisz " + (KeyCode.Alpha0 + i).ToString());
                     BeginNewGame();
                     StartCoroutine(LoadLevel(i));
                     return;

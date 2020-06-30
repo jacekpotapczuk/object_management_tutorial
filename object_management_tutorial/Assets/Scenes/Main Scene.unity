@@ -1312,6 +1312,7 @@ MonoBehaviour:
   saveKey: 115
   loadKey: 108
   destroyKey: 120
+  levelCount: 2
 --- !u!4 &2020495982
 Transform:
   m_ObjectHideFlags: 0

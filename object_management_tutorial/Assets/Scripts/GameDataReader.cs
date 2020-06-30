@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
 
-public class GameDataReader : MonoBehaviour {
+public class GameDataReader {
 
 
     private BinaryReader reader;
