@@ -52,4 +52,9 @@ public class GameDataReader {
         value.a = reader.ReadSingle();
         return value;
     }
+
+    public Random.State ReadRandomState()
+    {
+        return JsonUtility.FromJson<Random.State>(reader.ReadString());
+    }
 }
