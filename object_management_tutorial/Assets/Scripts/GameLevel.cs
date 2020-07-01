@@ -17,9 +17,9 @@ public class GameLevel : PersistableObject {
             persistentObjects = new PersistableObject[0];
     }
 
-    public void ConfigureSpawn(Shape shape)
+    public Shape SpawnShape()
     {
-        spawnZone.ConfigureSpawn(shape);
+        return spawnZone.SpawnShape();
     }
 
     public override void Save(GameDataWriter writer) 
