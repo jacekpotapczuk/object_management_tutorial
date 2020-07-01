@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcec2d709f4ce05499571e897063c292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnMovemnetDirection: 0
   surfaceOnly: 0
 --- !u!4 &6866506
 Transform:
@@ -182,6 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc153479d1fa3df498dfb8f85cb842ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnMovemnetDirection: 0
   surfaceOnly: 1
 --- !u!4 &63285139
 Transform:
@@ -223,6 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc153479d1fa3df498dfb8f85cb842ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnMovemnetDirection: 0
   surfaceOnly: 1
 --- !u!4 &471046218
 Transform:
@@ -372,6 +375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ca082d2ad89b274592da2a50393aa50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnMovemnetDirection: 0
   spawnZones:
   - {fileID: 6866505}
   - {fileID: 1496772014}
@@ -422,6 +426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcec2d709f4ce05499571e897063c292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnMovemnetDirection: 0
   surfaceOnly: 1
 --- !u!4 &1496772015
 Transform:

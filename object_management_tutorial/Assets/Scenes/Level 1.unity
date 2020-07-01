@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnZone: {fileID: 978550137}
+  persistentObjects: []
 --- !u!4 &651329412
 Transform:
   m_ObjectHideFlags: 0
@@ -247,6 +248,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc153479d1fa3df498dfb8f85cb842ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnConfig:
+    movemnetDirection: 0
+    speed:
+      min: 1.5
+      max: 2.5
+    angularSpeed:
+      min: 0
+      max: 90
+    scale:
+      min: 0.2
+      max: 1
+    color:
+      hue:
+        min: 0.35896415
+        max: 0.76884425
+      saturation:
+        min: 0
+        max: 1
+      value:
+        min: 0.28306884
+        max: 0.8333334
   surfaceOnly: 1
 --- !u!4 &978550138
 Transform:

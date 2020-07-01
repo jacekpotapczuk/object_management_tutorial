@@ -16,3 +16,5 @@ The code is written by me but comes from an object management tutorial by Jasper
 * Working with PropertyBlock and GPU instancing to get better performance.
 * Scene management.
 * Working with seeds. Saving/Loading Random.State to file.
+* Creating custom property drawers.
+* Creating custom property atrributes.
