@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class Game : PersistableObject {
 
+    public static Game Instance { get; private set; }
+
     [SerializeField] private ShapeFactory[] shapeFactories;
     [SerializeField] private PersistentStorage storage;
 
@@ -57,6 +59,7 @@ public class Game : PersistableObject {
 
     void OnEnable()
     {
+        Instance = this;
         if (shapeFactories[0].FactoryId != 0)
         {
             for (int i =0; i < shapeFactories.Length; i++)
@@ -70,7 +73,7 @@ public class Game : PersistableObject {
     {
         if (Input.GetKeyDown(createKey))
         {
-            CreateShape();
+            GameLevel.Current.SpawnShapes();
         }
         else if (Input.GetKeyDown(newGameKey))
         {
@@ -115,7 +118,7 @@ public class Game : PersistableObject {
         while (creationProgress >= 1f)
         {
             creationProgress -= 1f;
-            CreateShape();
+            GameLevel.Current.SpawnShapes();
         }
 
         destructionProgress += Time.deltaTime * DestructionSpeed;
@@ -124,6 +127,11 @@ public class Game : PersistableObject {
             destructionProgress -= 1f;
             DestroyShape();
         }
+    }
+
+    public void AddShape(Shape shape)
+    {
+        shapes.Add(shape);
     }
 
     public override void Save(GameDataWriter writer)
@@ -184,7 +192,6 @@ public class Game : PersistableObject {
             int materialId = version > 0 ? reader.ReadInt() : 0;
             Shape isntance = shapeFactories[factoryId].Get(shapeId, materialId);
             isntance.Load(reader);
-            shapes.Add(isntance);
         }
 
     }
@@ -201,12 +208,6 @@ public class Game : PersistableObject {
         SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(levelBuildIndex));
         loadedLevelBuildIndex = levelBuildIndex;
         enabled = true;
-    }
-
-    private void CreateShape()
-    {
-        shapes.Add(GameLevel.Current.SpawnShape());
-
     }
 
     private void DestroyShape()

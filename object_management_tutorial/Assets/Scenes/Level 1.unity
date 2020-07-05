@@ -255,10 +255,10 @@ MonoBehaviour:
     movemnetDirection: 0
     speed:
       min: 1.5
-      max: 2.5
+      max: 2
     angularSpeed:
       min: 0
-      max: 90
+      max: 1
     scale:
       min: 0.2
       max: 1
@@ -272,8 +272,25 @@ MonoBehaviour:
       value:
         min: 0.28306884
         max: 0.8333334
-    uniformColor: 0
-  surfaceOnly: 1
+    uniformColor: 1
+    oscillationDirection: 2
+    oscillationAmplitude:
+      min: 0
+      max: 0
+    oscillationFrequency:
+      min: 0
+      max: 0
+    satellite:
+      relativeScale:
+        min: 0.25
+        max: 0.5
+      orbitRadius:
+        min: 1
+        max: 2
+      orbitFrequency:
+        min: 0.25
+        max: 0.5
+  surfaceOnly: 0
 --- !u!4 &978550138
 Transform:
   m_ObjectHideFlags: 0
