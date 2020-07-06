@@ -1,5 +1,4 @@
-﻿
-public enum ShapeBehaviorType
+﻿public enum ShapeBehaviorType
 {
     Movement,
     Rotation,

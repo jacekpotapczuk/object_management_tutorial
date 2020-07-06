@@ -127,10 +127,20 @@ public class Game : PersistableObject {
             destructionProgress -= 1f;
             DestroyShape();
         }
+
+        int limit = GameLevel.Current.PopulationLimit;
+        if(limit > 0)
+        {
+            while(shapes.Count > limit)
+            {
+                DestroyShape();
+            }
+        }
     }
 
     public void AddShape(Shape shape)
     {
+        shape.SaveIndex = shapes.Count;
         shapes.Add(shape);
     }
 
@@ -164,6 +174,11 @@ public class Game : PersistableObject {
         StartCoroutine(LoadGame(reader));
     }
 
+    public Shape GetShape (int index)
+    {
+        return shapes[index];
+    }
+
     private IEnumerator LoadGame (GameDataReader reader)
     {
         int version = reader.Version;
@@ -193,7 +208,10 @@ public class Game : PersistableObject {
             Shape isntance = shapeFactories[factoryId].Get(shapeId, materialId);
             isntance.Load(reader);
         }
-
+        for (int i = 0; i < shapes.Count; i++)
+        {
+            shapes[i].ResolveShapeInstances();
+        }
     }
 
     private IEnumerator LoadLevel(int levelBuildIndex)
@@ -218,6 +236,7 @@ public class Game : PersistableObject {
             shapes[index].Recycle();
             // removing item from last place of the list is more efficient, so we swap
             int lastIndex = shapes.Count - 1;
+            shapes[lastIndex].SaveIndex = index;
             shapes[index] = shapes[lastIndex];
             shapes.RemoveAt(lastIndex);
         }

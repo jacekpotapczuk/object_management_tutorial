@@ -141,8 +141,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e71225cc9bbb7164c8ac268d099ff73b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  populationLimit: 100
   spawnZone: {fileID: 978550137}
-  persistentObjects: []
+  persistentObjects:
+  - {fileID: 978550137}
 --- !u!4 &651329412
 Transform:
   m_ObjectHideFlags: 0
@@ -251,16 +253,15 @@ MonoBehaviour:
   spawnConfig:
     factories:
     - {fileID: 11400000, guid: a0ca38b368222a6478d8ee9910568bf2, type: 2}
-    - {fileID: 11400000, guid: 2d3c8d8dd3c072d438b39b7b1d6e7c26, type: 2}
-    movemnetDirection: 0
+    movemnetDirection: 2
     speed:
-      min: 1.5
+      min: 0.2
       max: 2
     angularSpeed:
-      min: 0
-      max: 1
+      min: 1
+      max: 3
     scale:
-      min: 0.2
+      min: 0.5
       max: 1
     color:
       hue:
@@ -273,7 +274,7 @@ MonoBehaviour:
         min: 0.28306884
         max: 0.8333334
     uniformColor: 1
-    oscillationDirection: 2
+    oscillationDirection: 1
     oscillationAmplitude:
       min: 0
       max: 0
@@ -281,6 +282,9 @@ MonoBehaviour:
       min: 0
       max: 0
     satellite:
+      amount:
+        min: 1
+        max: 5
       relativeScale:
         min: 0.25
         max: 0.5

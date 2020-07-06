@@ -16,7 +16,7 @@ public abstract class ShapeBehavior
             Recycle();
     }
 #endif
-    public abstract void GameUpdate(Shape shape);
+    public abstract bool GameUpdate(Shape shape);
 
     public abstract void Save(GameDataWriter writer);
 
@@ -25,5 +25,7 @@ public abstract class ShapeBehavior
     public abstract ShapeBehaviorType BehaviorType { get; }
 
     public abstract void Recycle();
+
+    public virtual void ResolveShapeInstances(){}
 
 }

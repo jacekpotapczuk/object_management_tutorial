@@ -2,10 +2,10 @@
 
 public class SatelliteShapeBehavior : ShapeBehavior
 {
-
-    private Shape focalShape;
+    private ShapeInstance focalShape;
     private float frequency;
     private Vector3 cosOffset, sinOffset;
+    private Vector3 previousPosition;
 
     public override ShapeBehaviorType BehaviorType
     {
@@ -15,20 +15,36 @@ public class SatelliteShapeBehavior : ShapeBehavior
         }
     }
 
-    public override void GameUpdate(Shape shape)
+    public override bool GameUpdate(Shape shape)
     {
-        float t = 2f * Mathf.PI * frequency * shape.Age;
-        shape.transform.localPosition = focalShape.transform.localPosition + cosOffset * Mathf.Cos(t) + sinOffset * Mathf.Sin(t);
+        if (focalShape.IsValid)
+        {
+            float t = 2f * Mathf.PI * frequency * shape.Age;
+            previousPosition = shape.transform.localPosition;
+            shape.transform.localPosition = focalShape.Shape.transform.localPosition + cosOffset * Mathf.Cos(t) + sinOffset * Mathf.Sin(t);
+            return true;
+        }
+        shape.AddBehavior<MovementShapeBehavior>().Velocity = (shape.transform.localPosition - previousPosition) / Time.deltaTime;
+        return false;
+        
     }
 
     public override void Save(GameDataWriter writer)
     {
-
+        writer.Write(focalShape);
+        writer.Write(frequency);
+        writer.Write(cosOffset);
+        writer.Write(sinOffset);
+        writer.Write(previousPosition);
     }
 
     public override void Load(GameDataReader reader)
     {
-
+        focalShape = reader.ReadShapeInstance();
+        frequency = reader.ReadFloat();
+        cosOffset = reader.ReadVector3();
+        sinOffset = reader.ReadVector3();
+        previousPosition = reader.ReadVector3();
     }
 
     public override void Recycle()
@@ -53,6 +69,12 @@ public class SatelliteShapeBehavior : ShapeBehavior
 
         shape.AddBehavior<RotationShapeBehavior>().AngularVelocity = -360f * frequency * shape.transform.InverseTransformDirection(orbitAxis);
         GameUpdate(shape);
+        previousPosition = shape.transform.localPosition;
+    }
+
+    public override void ResolveShapeInstances()
+    {
+        focalShape.Resolve();
     }
 
 }

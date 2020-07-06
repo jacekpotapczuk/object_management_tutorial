@@ -27,6 +27,7 @@ public abstract class SpawnZone : PersistableObject {
         [System.Serializable]
         public struct SatelliteConfiguration
         {
+            public IntRange amount;
             [FloatRangeSlider(0.1f, 1f)]
             public FloatRange relativeScale;
             public FloatRange orbitRadius;
@@ -69,8 +70,12 @@ public abstract class SpawnZone : PersistableObject {
             movement.Velocity = GetDirectionVector(spawnConfig.movemnetDirection, t) * speed;
         }
         SetUpOscillation(shape);
-        CreateSatelliteFor(shape);
 
+        int satelliteCount = spawnConfig.satellite.amount.RandomValueInRange;
+        for (int i = 0; i < satelliteCount; i++)
+        {
+            CreateSatelliteFor(shape);
+        }
     }
 
     private void SetUpColor(Shape shape)
