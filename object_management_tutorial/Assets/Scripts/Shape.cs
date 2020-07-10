@@ -123,10 +123,6 @@ public class Shape : PersistableObject {
         if (reader.Version >= 5)
         {
             LoadColors(reader);
-            for (int i=0; i < colors.Length; i++)
-            {
-                SetColor(reader.ReadColor(), i);
-            }
         }
         else
             SetColor(reader.Version > 0 ? reader.ReadColor() : Color.white);
