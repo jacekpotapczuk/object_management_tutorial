@@ -141,6 +141,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcec2d709f4ce05499571e897063c292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnConfig:
+    factories:
+    - {fileID: 11400000, guid: 2d3c8d8dd3c072d438b39b7b1d6e7c26, type: 2}
+    movemnetDirection: 0
+    speed:
+      min: 0.5
+      max: 2
+    angularSpeed:
+      min: 0.1
+      max: 2
+    scale:
+      min: 0.1
+      max: 1
+    color:
+      hue:
+        min: 0
+        max: 1
+      saturation:
+        min: 0
+        max: 1
+      value:
+        min: 0
+        max: 1
+    uniformColor: 1
+    oscillationDirection: 0
+    oscillationAmplitude:
+      min: 0
+      max: 0
+    oscillationFrequency:
+      min: 0
+      max: 0
+    satellite:
+      relativeScale:
+        min: 0.1
+        max: 0.1
+      orbitRadius:
+        min: 0
+        max: 0
+      orbitFrequency:
+        min: 0
+        max: 0
   surfaceOnly: 0
 --- !u!4 &6866506
 Transform:
@@ -376,10 +417,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ca082d2ad89b274592da2a50393aa50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnConfig:
+    factories:
+    - {fileID: 11400000, guid: 2d3c8d8dd3c072d438b39b7b1d6e7c26, type: 2}
+    movemnetDirection: 0
+    speed:
+      min: 0
+      max: 0
+    angularSpeed:
+      min: 0
+      max: 0
+    scale:
+      min: 0
+      max: 0
+    color:
+      hue:
+        min: 0
+        max: 0
+      saturation:
+        min: 0
+        max: 0
+      value:
+        min: 0
+        max: 0
+    uniformColor: 0
+    oscillationDirection: 0
+    oscillationAmplitude:
+      min: 0
+      max: 0
+    oscillationFrequency:
+      min: 0
+      max: 0
+    satellite:
+      relativeScale:
+        min: 0
+        max: 0
+      orbitRadius:
+        min: 0
+        max: 0
+      orbitFrequency:
+        min: 0
+        max: 0
   spawnZones:
   - {fileID: 6866505}
   - {fileID: 1496772014}
   sequential: 1
+  overrideConfig: 0
 --- !u!4 &978550138
 Transform:
   m_ObjectHideFlags: 0
@@ -422,6 +505,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcec2d709f4ce05499571e897063c292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnConfig:
+    factories:
+    - {fileID: 11400000, guid: a0ca38b368222a6478d8ee9910568bf2, type: 2}
+    movemnetDirection: 0
+    speed:
+      min: 0
+      max: 0
+    angularSpeed:
+      min: 0
+      max: 0
+    scale:
+      min: 0.1
+      max: 1
+    color:
+      hue:
+        min: 0
+        max: 1
+      saturation:
+        min: 0
+        max: 1
+      value:
+        min: 0
+        max: 1
+    uniformColor: 0
+    oscillationDirection: 0
+    oscillationAmplitude:
+      min: 0
+      max: 0
+    oscillationFrequency:
+      min: 0
+      max: 0
+    satellite:
+      relativeScale:
+        min: 0.1
+        max: 0.5190476
+      orbitRadius:
+        min: 0.1
+        max: 1
+      orbitFrequency:
+        min: 1
+        max: 1
   surfaceOnly: 0
 --- !u!4 &1496772015
 Transform:

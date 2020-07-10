@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Shape : PersistableObject {
+public class Shape : PersistableObject
+{
 
     private int shapeId = int.MinValue;
     private Color[] colors;
@@ -16,11 +17,11 @@ public class Shape : PersistableObject {
 
     public int ShapeId
     {
-        get 
+        get
         {
             return shapeId;
         }
-        set 
+        set
         {
             if (shapeId == int.MinValue && value != int.MinValue)
             {
@@ -43,7 +44,11 @@ public class Shape : PersistableObject {
 
     public float Age { get; private set; }
 
+    public int InstanceId { get; private set; }
+
     public int MaterialId { get; private set; }
+
+    public int SaveIndex { get; set; }
 
     private ShapeFactory originFactory;
     public ShapeFactory OriginFactory
@@ -72,7 +77,11 @@ public class Shape : PersistableObject {
         Age += Time.deltaTime;
         for (int i = 0; i < behaviorList.Count; i++)
         {
-            behaviorList[i].GameUpdate(this);
+            if (!behaviorList[i].GameUpdate(this))
+            {
+                behaviorList[i].Recycle();
+                behaviorList.RemoveAt(i--);
+            }
         }
     }
 
@@ -86,6 +95,7 @@ public class Shape : PersistableObject {
     public void Recycle()
     {
         Age = 0f;
+        InstanceId += 1;
         for (int i = 0; i < behaviorList.Count; i++)
         {
             behaviorList[i].Recycle();
@@ -135,7 +145,7 @@ public class Shape : PersistableObject {
 
         writer.Write(Age);
         writer.Write(behaviorList.Count);
-        for(int i = 0; i < behaviorList.Count; i++)
+        for (int i = 0; i < behaviorList.Count; i++)
         {
             writer.Write((int)behaviorList[i].BehaviorType);
             behaviorList[i].Save(writer);
@@ -163,10 +173,18 @@ public class Shape : PersistableObject {
                 behavior.Load(reader);
             }
         }
-        else if(reader.Version >= 4)
+        else if (reader.Version >= 6)
         {
             AddBehavior<RotationShapeBehavior>().AngularVelocity = reader.ReadVector3();
             AddBehavior<MovementShapeBehavior>().Velocity = reader.ReadVector3();
+        }
+    }
+
+    public void ResolveShapeInstances()
+    {
+        for (int i = 0; i < behaviorList.Count; i++)
+        {
+            behaviorList[i].ResolveShapeInstances();
         }
     }
 
@@ -179,10 +197,10 @@ public class Shape : PersistableObject {
             SetColor(reader.ReadColor(), i);
         if (count > colors.Length)
         {
-            for(; i < count; i++)
+            for (; i < count; i++)
                 reader.ReadColor();
         }
-        else if(count < colors.Length)
+        else if (count < colors.Length)
         {
             for (; i < colors.Length; i++)
                 SetColor(Color.white, i);

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class Game : PersistableObject {
 
+    public static Game Instance { get; private set; }
+
     [SerializeField] private ShapeFactory[] shapeFactories;
     [SerializeField] private PersistentStorage storage;
 
@@ -57,6 +59,7 @@ public class Game : PersistableObject {
 
     void OnEnable()
     {
+        Instance = this;
         if (shapeFactories[0].FactoryId != 0)
         {
             for (int i =0; i < shapeFactories.Length; i++)
@@ -70,7 +73,7 @@ public class Game : PersistableObject {
     {
         if (Input.GetKeyDown(createKey))
         {
-            CreateShape();
+            GameLevel.Current.SpawnShapes();
         }
         else if (Input.GetKeyDown(newGameKey))
         {
@@ -115,7 +118,7 @@ public class Game : PersistableObject {
         while (creationProgress >= 1f)
         {
             creationProgress -= 1f;
-            CreateShape();
+            GameLevel.Current.SpawnShapes();
         }
 
         destructionProgress += Time.deltaTime * DestructionSpeed;
@@ -124,6 +127,21 @@ public class Game : PersistableObject {
             destructionProgress -= 1f;
             DestroyShape();
         }
+
+        int limit = GameLevel.Current.PopulationLimit;
+        if(limit > 0)
+        {
+            while(shapes.Count > limit)
+            {
+                DestroyShape();
+            }
+        }
+    }
+
+    public void AddShape(Shape shape)
+    {
+        shape.SaveIndex = shapes.Count;
+        shapes.Add(shape);
     }
 
     public override void Save(GameDataWriter writer)
@@ -156,6 +174,11 @@ public class Game : PersistableObject {
         StartCoroutine(LoadGame(reader));
     }
 
+    public Shape GetShape (int index)
+    {
+        return shapes[index];
+    }
+
     private IEnumerator LoadGame (GameDataReader reader)
     {
         int version = reader.Version;
@@ -184,9 +207,11 @@ public class Game : PersistableObject {
             int materialId = version > 0 ? reader.ReadInt() : 0;
             Shape isntance = shapeFactories[factoryId].Get(shapeId, materialId);
             isntance.Load(reader);
-            shapes.Add(isntance);
         }
-
+        for (int i = 0; i < shapes.Count; i++)
+        {
+            shapes[i].ResolveShapeInstances();
+        }
     }
 
     private IEnumerator LoadLevel(int levelBuildIndex)
@@ -203,12 +228,6 @@ public class Game : PersistableObject {
         enabled = true;
     }
 
-    private void CreateShape()
-    {
-        shapes.Add(GameLevel.Current.SpawnShape());
-
-    }
-
     private void DestroyShape()
     {
         if (shapes.Count > 0)
@@ -217,6 +236,7 @@ public class Game : PersistableObject {
             shapes[index].Recycle();
             // removing item from last place of the list is more efficient, so we swap
             int lastIndex = shapes.Count - 1;
+            shapes[lastIndex].SaveIndex = index;
             shapes[index] = shapes[lastIndex];
             shapes.RemoveAt(lastIndex);
         }
