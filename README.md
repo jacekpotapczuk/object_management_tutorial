@@ -18,3 +18,6 @@ The code is written by me but comes from an object management tutorial by Jasper
 * Working with seeds. Saving/Loading Random.State to file.
 * Creating custom property drawers.
 * Creating custom property atrributes.
+* Conditional compilation.
+* Creating generic methods and classes.
+* Creating extension methods.

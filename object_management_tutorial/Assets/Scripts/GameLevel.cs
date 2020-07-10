@@ -3,10 +3,21 @@
 public class GameLevel : PersistableObject {
 
     [SerializeField]
+    private int populationLimit;
+    
+    [SerializeField]
     private SpawnZone spawnZone;
 
     [SerializeField]
     private PersistableObject[] persistentObjects;
+
+    public int PopulationLimit
+    {
+        get
+        {
+            return populationLimit;
+        }
+    }
 
     public static GameLevel Current { get; private set; }
     
@@ -17,9 +28,9 @@ public class GameLevel : PersistableObject {
             persistentObjects = new PersistableObject[0];
     }
 
-    public Shape SpawnShape()
+    public void SpawnShapes()
     {
-        return spawnZone.SpawnShape();
+        spawnZone.SpawnShapes();
     }
 
     public override void Save(GameDataWriter writer) 
