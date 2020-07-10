@@ -127,10 +127,11 @@ public class Shape : PersistableObject {
 
     public override void Save(GameDataWriter writer)
     {
-        base.Save(writer);
-        writer.Write(colors.Length);
-        for (int i = 0; i < colors.Length; i++)
-            writer.Write(colors[i]);
+		base.Save(writer);
+		writer.Write(colors.Length);
+		for (int i = 0; i < colors.Length; i++) {
+			writer.Write(colors[i]);
+		}
 
         writer.Write(Age);
         writer.Write(behaviorList.Count);
@@ -147,10 +148,6 @@ public class Shape : PersistableObject {
         if (reader.Version >= 5)
         {
             LoadColors(reader);
-            for (int i=0; i < colors.Length; i++)
-            {
-                SetColor(reader.ReadColor(), i);
-            }
         }
         else
             SetColor(reader.Version > 0 ? reader.ReadColor() : Color.white);
@@ -159,14 +156,14 @@ public class Shape : PersistableObject {
         {
             Age = reader.ReadFloat();
             int behaviorCount = reader.ReadInt();
-            for (int i = 0; i < behaviorList.Count; i++)
+            for (int i = 0; i < behaviorCount; i++)
             {
                 ShapeBehavior behavior = ((ShapeBehaviorType)reader.ReadInt()).GetInstance();
                 behaviorList.Add(behavior);
                 behavior.Load(reader);
             }
         }
-        else if(reader.Version >= 6)
+        else if(reader.Version >= 4)
         {
             AddBehavior<RotationShapeBehavior>().AngularVelocity = reader.ReadVector3();
             AddBehavior<MovementShapeBehavior>().Velocity = reader.ReadVector3();

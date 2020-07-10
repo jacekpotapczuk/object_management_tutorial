@@ -25,7 +25,7 @@ public sealed class MovementShapeBehavior : ShapeBehavior
 
     public override void Load(GameDataReader reader)
     {
-        reader.ReadVector3();
+        Velocity = reader.ReadVector3();
     }
 
     public override void Recycle()
