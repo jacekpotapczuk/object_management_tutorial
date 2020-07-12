@@ -50,6 +50,14 @@ public class Shape : PersistableObject
 
     public int SaveIndex { get; set; }
 
+    public bool IsMarkedAsDying
+    {
+        get
+        {
+            return Game.Instance.IsMarkedAsDying(this);
+        }
+    }
+
     private ShapeFactory originFactory;
     public ShapeFactory OriginFactory
     {
@@ -90,6 +98,16 @@ public class Shape : PersistableObject
         T behavior = ShapeBehaviorPool<T>.Get();
         behaviorList.Add(behavior);
         return behavior;
+    }
+
+    public void Die()
+    {
+        Game.Instance.Kill(this);
+    }
+
+    public void MarkAsDying()
+    {
+        Game.Instance.MarkAsDying(this);
     }
 
     public void Recycle()

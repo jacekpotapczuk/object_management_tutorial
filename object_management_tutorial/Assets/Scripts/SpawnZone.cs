@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Experimental.Rendering;
 
 public abstract class SpawnZone : PersistableObject {
 
@@ -32,16 +33,41 @@ public abstract class SpawnZone : PersistableObject {
             public FloatRange relativeScale;
             public FloatRange orbitRadius;
             public FloatRange orbitFrequency;
+            public bool uniformLifecycles;
 
         }
 
         public SatelliteConfiguration satellite;
+
+        [System.Serializable]
+        public struct LifecycleConfiguration
+        {
+            [FloatRangeSlider(0f, 2f)]
+            public FloatRange growingDuration;
+
+            [FloatRangeSlider(0f, 100f)]
+            public FloatRange adultDuration;
+
+            [FloatRangeSlider(0f, 2f)]
+            public FloatRange dyingDuration;
+
+            public Vector3 RandomDurations
+            {
+                get
+                {
+                    return new Vector3(growingDuration.RandomValueInRange, 
+                                       adultDuration.RandomValueInRange,
+                                       dyingDuration.RandomValueInRange);
+                }
+            }
+        }
+
+        public LifecycleConfiguration lifecycle;
+
     }
 
     [SerializeField]
     SpawnConfiguration spawnConfig;
-
-    private List<ShapeBehavior> behaviorList = new List<ShapeBehavior>();
 
     public abstract Vector3 SpawnPoint { get; }
 
@@ -54,7 +80,7 @@ public abstract class SpawnZone : PersistableObject {
         t.localRotation = Random.rotation;
         t.localScale = Vector3.one * spawnConfig.scale.RandomValueInRange;
 
-        SetUpColor(shape);
+        SetupColor(shape);
 
         float angularSpeed = spawnConfig.angularSpeed.RandomValueInRange;
         if (angularSpeed != 0f)
@@ -69,16 +95,19 @@ public abstract class SpawnZone : PersistableObject {
             var movement = shape.AddBehavior<MovementShapeBehavior>();
             movement.Velocity = GetDirectionVector(spawnConfig.movemnetDirection, t) * speed;
         }
-        SetUpOscillation(shape);
+        SetupOscillation(shape);
+
+        Vector3 lifecycleDurations = spawnConfig.lifecycle.RandomDurations;
 
         int satelliteCount = spawnConfig.satellite.amount.RandomValueInRange;
         for (int i = 0; i < satelliteCount; i++)
         {
-            CreateSatelliteFor(shape);
+            CreateSatelliteFor(shape, spawnConfig.satellite.uniformLifecycles ? lifecycleDurations : spawnConfig.lifecycle.RandomDurations);
         }
+        SetupLifecycle(shape, lifecycleDurations);
     }
 
-    private void SetUpColor(Shape shape)
+    private void SetupColor(Shape shape)
     {
         if (spawnConfig.uniformColor)
             shape.SetColor(spawnConfig.color.RandomInRange);
@@ -91,7 +120,7 @@ public abstract class SpawnZone : PersistableObject {
         }
     }
 
-    private void CreateSatelliteFor(Shape focalShape)
+    private void CreateSatelliteFor(Shape focalShape, Vector3 lifecycleDurations)
     {
         int factoryIndex = Random.Range(0, spawnConfig.factories.Length);
         Shape shape = spawnConfig.factories[factoryIndex].GetRandom();
@@ -99,15 +128,38 @@ public abstract class SpawnZone : PersistableObject {
         t.localRotation = Random.rotation;
         t.localScale = focalShape.transform.localScale * spawnConfig.satellite.relativeScale.RandomValueInRange;
 
-        SetUpColor(shape);
+        SetupColor(shape);
         shape.AddBehavior<SatelliteShapeBehavior>().Initialize(shape, 
                                                                focalShape,
                                                                spawnConfig.satellite.orbitRadius.RandomValueInRange,
                                                                spawnConfig.satellite.orbitFrequency.RandomValueInRange);
+        SetupLifecycle(shape, lifecycleDurations);
     }
 
+    void SetupLifecycle(Shape shape, Vector3 durations)
+    {
+        if (durations.x > 0f)
+        {
+            if (durations.y > 0f || durations.z > 0f)
+            {
+                shape.AddBehavior<LifecycleShapeBehavior>().Initialize(shape, durations.x, durations.y, durations.z);
+            }
+            else
+            {
+                shape.AddBehavior<GrowingShapeBehavior>().Initialize(shape, durations.x);
+            }
+        }
+        else if (durations.y > 0f)
+        {
+            shape.AddBehavior<LifecycleShapeBehavior>().Initialize(shape, durations.x, durations.y, durations.z);
+        }
+        else if (durations.z > 0f)
+        {
+            shape.AddBehavior<DyingShapeBehavior>().Initialize(shape, durations.z);
+        }
+    }
 
-    private void SetUpOscillation(Shape shape)
+    private void SetupOscillation(Shape shape)
     {
         float amplitude = spawnConfig.oscillationAmplitude.RandomValueInRange;
         float frequency = spawnConfig.oscillationFrequency.RandomValueInRange;
@@ -119,6 +171,8 @@ public abstract class SpawnZone : PersistableObject {
         oscillation.Offset = GetDirectionVector(spawnConfig.oscillationDirection, shape.transform) * amplitude;
         oscillation.Frequency = frequency;
     }
+
+
     private Vector3 GetDirectionVector(SpawnConfiguration.MovementDirection direction, Transform t)
     {
         switch (direction)

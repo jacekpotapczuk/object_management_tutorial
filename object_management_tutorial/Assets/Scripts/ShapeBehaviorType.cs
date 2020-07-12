@@ -3,7 +3,9 @@
     Movement,
     Rotation,
     Oscillation,
-    Satellite
+    Satellite,
+    Growing,
+    Dying
 }
 
 public static class ShapeBehaviorTypeMethods
@@ -20,6 +22,10 @@ public static class ShapeBehaviorTypeMethods
                 return ShapeBehaviorPool<OscillationShapeBehavior>.Get();
             case ShapeBehaviorType.Satellite:
                 return ShapeBehaviorPool<SatelliteShapeBehavior>.Get();
+            case ShapeBehaviorType.Growing:
+                return ShapeBehaviorPool<GrowingShapeBehavior>.Get();
+            case ShapeBehaviorType.Dying:
+                return ShapeBehaviorPool<DyingShapeBehavior>.Get();
         }
         UnityEngine.Debug.Log("Forgot to suport " + type);
         return null;
